@@ -104,11 +104,10 @@ public class Sim2 extends PApplet {
         if (value < 0) {
             // Render pixels with a negative (invalid) value in blue
             g.pixels[idx] = color(0, 0, 255);
-        } //else if (value - grid[AVERAGE_LAYER_IDX][x][y] < 0) {
-        // For debugging render pixels with a lower than average value in red
-        //            g.pixels[idx] = color(255, 0, 0);
-        //}
-        else {
+//        } else if (value - grid[AVERAGE_LAYER_IDX][x][y] < 0) {
+////         For debugging render pixels with a lower than average value in red
+//            g.pixels[idx] = color(255, 0, 0);
+        } else {
             // Render the pixel in a rage from black to grey
             g.pixels[idx] = color(value);
         }
@@ -129,26 +128,14 @@ public class Sim2 extends PApplet {
         int range = 5;
         average = calcAverage(x, y, range);
         grid[AVERAGE_LAYER_IDX][x][y] = average;
-        tospread = value - average;
+        tospread = (float) (value / ((range * 2 + 1) * (range * 2 + 1)));
         if (tospread <= 0) {
             return;
         }
-
         float totalFlow = 0;
-        int numNeighbours = 0;
-        for (int nx = -1; nx <= 1; nx++) {
-            for (int ny = -1; ny <= 1; ny++) {
-                int cx = x + nx;
-                int cy = y + ny;
-                if (cx < 0 || cy < 0 || cx > cols - 1 || cy > rows - 1) {
-                    continue;
-                }
-                numNeighbours++;
-            }
-        }
-        float flow = (float) (tospread / numNeighbours);
-        for (int nx = -1; nx <= 1; nx++) {
-            for (int ny = -1; ny <= 1; ny++) {
+        float flow = tospread;
+        for (int nx = -range; nx <= range; nx++) {
+            for (int ny = -range; ny <= range; ny++) {
                 int cx = x + nx;
                 int cy = y + ny;
                 if (cx < 0 || cy < 0 || cx > cols - 1 || cy > rows - 1) {
@@ -158,6 +145,15 @@ public class Sim2 extends PApplet {
                 totalFlow += flow;
             }
         }
+//        for (int nx = -range; nx <= range; nx++) {
+//            for (int ny = -range; ny <= range; ny++) {
+//                int cx = x + nx;
+//                int cy = y + ny;
+//                if (cx < 0 || cy < 0 || cx > cols - 1 || cy > rows - 1) {
+//                    continue;
+//                }
+//            }
+//        }
         grid[OUTBOUND_LAYER_IDX][x][y] = totalFlow;
     }
 

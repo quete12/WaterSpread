@@ -104,11 +104,11 @@ public class Sim extends PApplet {
         if (value < 0) {
             // Render pixels with a negative (invalid) value in blue
             g.pixels[idx] = color(0, 0, 255);
-        } else if (value - grid[AVERAGE_LAYER_IDX][x][y] < 0) {
-            // For debugging render pixels with a lower than average value in red
-
-//            g.pixels[idx] = color(255, 0, 0);
-        } else {
+        } //else if (value - grid[AVERAGE_LAYER_IDX][x][y] < 0) {
+        // For debugging render pixels with a lower than average value in red
+        //            g.pixels[idx] = color(255, 0, 0);
+        //}
+        else {
             // Render the pixel in a rage from black to grey
             g.pixels[idx] = color(value);
         }
@@ -126,11 +126,14 @@ public class Sim extends PApplet {
 
         float value = grid[VALUE_LAYER_IDX][x][y];
 
-        int range = 3;
-
-        float average = calcAverage(x, y, range);
-        float tospread = value - average;
+        float average;
+        float tospread = 0;
+        int range = 2;
+        average = calcAverage(x, y, range);
         grid[AVERAGE_LAYER_IDX][x][y] = average;
+        tospread = value - average;
+        range++;
+        //tospread = (float) (tospread > 0 ? tospread : value > diffTotal ? diffTotal * 0.1 : 0);
         if (tospread <= 0) {
             return;
         }
